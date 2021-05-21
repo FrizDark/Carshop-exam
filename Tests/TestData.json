@@ -1,0 +1,20 @@
+{
+    "Test": [
+        {
+            "ID": "aaba5e40-3173-47eb-bf10-41faf67c6605",
+            "TestOne_ID" : "bb830e57-39e5-47e9-ae89-2a465dac8d97",
+            "TestNum": 1234,
+            "TestString": "TEST",
+            "TestArray": [1, 2, 3],
+            "TestBool": true
+        },
+        {
+            "ID": "7e97606d-3c02-4d1d-9e9a-11c333a97cd5",
+            "TestOne_ID" : "076d0f1a-8e28-4791-901a-0e7fdf7c720c",
+            "TestNum": 5678,
+            "TestString": "test",
+            "TestArray": [4, 5, 6],
+            "TestBool": false
+        }
+    ]
+}

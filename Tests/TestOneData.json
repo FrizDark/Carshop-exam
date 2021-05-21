@@ -1,0 +1,18 @@
+{
+  "TestOne": [
+    {
+      "ID": "bb830e57-39e5-47e9-ae89-2a465dac8d97",
+      "NumTest": 1133,
+      "StringTest": "TEST_ONE",
+      "ArrayTest": [11, 22, 33],
+      "BoolTest": true
+    },
+    {
+      "ID": "076d0f1a-8e28-4791-901a-0e7fdf7c720c",
+      "NumTest": 5577,
+      "StringTest": "test_one",
+      "ArrayTest": [44, 55, 66],
+      "BoolTest": false
+    }
+  ]
+}

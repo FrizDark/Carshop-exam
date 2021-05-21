@@ -1,0 +1,20 @@
+{
+    "Managers": [
+        {
+            "Age": "58",
+            "City": "Kharkiv",
+            "FirstName": "Vladimir",
+            "ID": "4a31fefb-3e03-42d3-86fe-363d6ef24113",
+            "LastName": "Ivanov",
+            "MobileNumber": "3801234567"
+        },
+        {
+            "Age": "35",
+            "City": "Kiev",
+            "FirstName": "Alexander",
+            "ID": "02031298-48e5-4ee0-acda-4eb28f29d2c9",
+            "LastName": "Ogurtsov",
+            "MobileNumber": "3807654321"
+        }
+    ]
+}

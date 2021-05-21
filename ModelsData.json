@@ -1,0 +1,34 @@
+{
+    "Models": [
+        {
+            "ID": "bb830e57-39e5-47e9-ae89-2a465dac8d97",
+            "Mark": "Volvo",
+            "Model": "S1",
+            "Type": "Sedan"
+        },
+        {
+            "ID": "579c1684-8f10-438b-912b-249ed113039d",
+            "Mark": "Toyota",
+            "Model": "R2",
+            "Type": "Jeep"
+        },
+        {
+            "ID": "076d0f1a-8e28-4791-901a-0e7fdf7c720c",
+            "Mark": "BMW",
+            "Model": "M4",
+            "Type": "Sedan"
+        },
+        {
+            "ID": "d1dba232-d1fd-4982-b8dd-f5ea09edc0fd",
+            "Mark": "Volvo",
+            "Model": "911",
+            "Type": "Sportcar"
+        },
+        {
+            "ID": "210a154b-70da-4319-8858-dab29d700a3b",
+            "Mark": "Volvo",
+            "Model": "911",
+            "Type": "Jeep"
+        }
+    ]
+}
