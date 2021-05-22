@@ -14,7 +14,8 @@ SOURCES += \
     Model.cpp \
     View.cpp \
     main.cpp \
-    mainwindow.cpp
+    mainwindow.cpp \
+    viewwindow.cpp
 
 HEADERS += \
     BaseTable.h \
@@ -24,10 +25,12 @@ HEADERS += \
     Model.h \
     Table.h \
     View.h \
-    mainwindow.h
+    mainwindow.h \
+    viewwindow.h
 
 FORMS += \
-    mainwindow.ui
+    mainwindow.ui \
+    viewwindow.ui
 
 INCLUDEPATH += \
     /Users/dmitr/Documents/C++/Boost/boost_1_76_0
