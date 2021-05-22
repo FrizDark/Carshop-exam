@@ -4,6 +4,10 @@
 
 #include "BaseTable.h"
 
+
+std::string BaseTable::searchPath = "/Users/dmitr/Documents/C++/build-Exam-Desktop_Qt_6_0_3_clang_64bit-Debug/";//"../";
+
+
 pt::ptree BaseTable::saver(const Model &i) {
     pt::ptree rootObject, rootObjectElements, rOEE;
     for (auto &j : i.Values()) {
@@ -99,8 +103,6 @@ pt::ptree BaseTable::saver(ElementValue i, map<std::string, TypeName> b) {
     }
     return rootObjectElements;
 }
-
-std::string BaseTable::searchPath = "../";
 
 bool BaseTable::save() {
     pt::ptree root;
