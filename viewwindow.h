@@ -3,7 +3,7 @@
 
 #include <QMainWindow>
 
-#include "Table.h"
+#include "View.h"
 
 enum ViewType {
     manager, model, car, carManager
@@ -34,7 +34,10 @@ private:
 
     ViewType type;
 
-    void print(list<Model*> elements);
+//    void print(list<Model*> elements);
+//    void print(View view);
+
+    void print(QString elements);
 
 };
 

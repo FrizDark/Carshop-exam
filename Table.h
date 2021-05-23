@@ -144,7 +144,39 @@ public:
         }
         cout << endl;
     }
+    string asString(const Model& m) {
+        string str;
+        for (auto &t : m.Fields()) {
+            if (t.second.Description == "ID") continue;
+            str += m[t.first].asString() + "|";
+        }
+        str.pop_back();
+        return str;
+    }
+    string asString(vector<T> *vv = NULL) {
+        string str;
+        T mm;
+        for (auto &i : mm.Fields()) {
+            if (i.second.Description == "ID") continue;
+            str += i.second.Description + "|";
+        }
+        str.pop_back();
+        str += "/";
+        if (vv) {
+            for (auto &m : *vv) {
+                str += asString(m) + "=";
+            }
+        } else {
+            for (auto &m : m_elements) {
+                str += asString(*m) + "=";
+            }
+        }
+        str.pop_back();
+        return str;
+    }
     bool load() {
+        m_elements.clear();
+
         pt::ptree root;
         string fileName = searchPath + name() + "Data.json";
         pt::read_json(fileName, root);
