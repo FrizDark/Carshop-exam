@@ -245,7 +245,7 @@ public:
         int ihNum = 0;
         for (auto &i : m_elements) {
             for (auto j : i->Fields()) {
-                if (j.second.Description == "ID") continue;
+                if (j.first == "ID") continue;
 
                 if (m[j.first].type == (*i)[j.first].type) {
                     switch (m[j.first].type) {
@@ -261,12 +261,8 @@ public:
                     break;
                     }
                 }
-
-//                if (*m[j.first].value.tstring == *(*i)[j.first].value.tstring) {
-//                    ihNum++;
-//                }
             }
-            if (ihNum == i->Fields().size() - 1) {
+            if (ihNum == i->Fields().size()) {
                 IsHere = true;
                 break;
             } else {

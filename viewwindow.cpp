@@ -194,7 +194,7 @@ void ViewWindow::getData(map<string, ElementValue> value) {
         random_generator gen;
 
         for (auto &i : model->Fields()) {
-            if (i.second.Description == "ID") {
+            if (i.first == "ID") {
                 (*model)["ID"] = to_string(gen());
                 continue;
             }
