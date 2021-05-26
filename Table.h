@@ -246,9 +246,25 @@ public:
         for (auto &i : m_elements) {
             for (auto j : i->Fields()) {
                 if (j.second.Description == "ID") continue;
-                if (*m[j.first].value.tstring == *(*i)[j.first].value.tstring) {
-                    ihNum++;
+
+                if (m[j.first].type == (*i)[j.first].type) {
+                    switch (m[j.first].type) {
+                    case ElementType::tstring:
+                        if (*m[j.first].value.tstring == *(*i)[j.first].value.tstring) {
+                            ihNum++;
+                        }
+                    break;
+                    case ElementType::tnumber:
+                        if (m[j.first].value.tnumber == (*i)[j.first].value.tnumber) {
+                            ihNum++;
+                        }
+                    break;
+                    }
                 }
+
+//                if (*m[j.first].value.tstring == *(*i)[j.first].value.tstring) {
+//                    ihNum++;
+//                }
             }
             if (ihNum == i->Fields().size() - 1) {
                 IsHere = true;

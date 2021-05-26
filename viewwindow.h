@@ -35,6 +35,8 @@ private slots:
 
     void getData(map<string, ElementValue>);
 
+    void on_delBtn_clicked();
+
 private:
     Ui::ViewWindow *ui;
 

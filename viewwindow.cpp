@@ -73,24 +73,32 @@ void ViewWindow::print(QString elements) {
     QStringList head_body = elements.split("/");
 
     QStringList head = head_body.at(0).split("|");
-    QStringList body = head_body.at(1).split("=");
-
     ui->tableWidget->setColumnCount(head.size());
     ui->tableWidget->setHorizontalHeaderLabels(head);
+    if (head_body.size() == 2) {
+        ui->delBtn->setEnabled(true);
+        ui->editBtn->setEnabled(true);
+        ui->findBtn->setEnabled(true);
 
-    ui->tableWidget->setRowCount(body.size());
+        QStringList body = head_body.at(1).split("=");
+        ui->tableWidget->setRowCount(body.size());
+        for (auto row : body) {
+            for (auto cell : row.split("|")) {
 
-    for (auto row : body) {
-        for (auto cell : row.split("|")) {
+                item = new QTableWidgetItem;
+                item->setText(cell);
+                ui->tableWidget->setItem(i, j, item);
 
-            item = new QTableWidgetItem;
-            item->setText(cell);
-            ui->tableWidget->setItem(i, j, item);
-
-            j++;
+                j++;
+            }
+            j = 0;
+            i++;
         }
-        j = 0;
-        i++;
+    } else {
+        ui->tableWidget->setRowCount(0);
+        ui->delBtn->setEnabled(false);
+        ui->editBtn->setEnabled(false);
+        ui->findBtn->setEnabled(false);
     }
 
 }
@@ -129,32 +137,37 @@ void ViewWindow::on_addBtn_clicked()
     map<string, list<Model*>> list;
     InputStyle* is;
 
+    Model* m;
 
     switch (type) {
 
     case manager:
-        add_ui = new AddWindow((*ManagerTable::instance().elements().begin())[0].Fields());
+        m = new ManagerModel;
+        add_ui = new AddWindow(m->Fields());
         connect(add_ui, SIGNAL(sendData(map<string, ElementValue>)), this, SLOT(getData(map<string, ElementValue>)));
         add_ui->show();
     break;
     case model:
-        add_ui = new AddWindow((*ModelTable::instance().elements().begin())[0].Fields());
+        m = new ModelModel;
+        add_ui = new AddWindow(m->Fields());
         connect(add_ui, SIGNAL(sendData(map<string, ElementValue>)), this, SLOT(getData(map<string, ElementValue>)));
         add_ui->show();
     break;
     case car:
+        m = new CarModel;
         ModelTable::instance().load();
 
         id_fields.insert(make_pair("Model_ID", "Модель"));
         list.insert(make_pair("Model_ID", ModelTable::instance().elements()));
 
-        is = new InputStyle((*CarTable::instance().elements().begin())[0].Fields(), id_fields, list);
+        is = new InputStyle(m->Fields(), id_fields, list);
 
         add_ui = new AddWindow(is);
         connect(add_ui, SIGNAL(sendData(map<string, ElementValue>)), this, SLOT(getData(map<string, ElementValue>)));
         add_ui->show();
     break;
     case carManager:
+        m = new CarManagerModel;
         CarTable::instance().load();
         ManagerTable::instance().load();
 
@@ -163,7 +176,7 @@ void ViewWindow::on_addBtn_clicked()
         list.insert(make_pair("Car_ID", CarTable::instance().elements()));
         list.insert(make_pair("Manager_ID", ManagerTable::instance().elements()));
 
-        is = new InputStyle((*CarManagerTable::instance().elements().begin())[0].Fields(), id_fields, list);
+        is = new InputStyle(m->Fields(), id_fields, list);
 
         add_ui = new AddWindow(is);
         connect(add_ui, SIGNAL(sendData(map<string, ElementValue>)), this, SLOT(getData(map<string, ElementValue>)));
@@ -215,6 +228,42 @@ void ViewWindow::getData(map<string, ElementValue> value) {
         m = new CarManagerModel();
         f(m);
         CarManagerTable::instance().add(*(CarManagerModel*)m);
+        print(CarManagerTable::instance().asString().c_str());
+    break;
+    }
+
+}
+
+void ViewWindow::on_delBtn_clicked()
+{
+
+    int row = ui->tableWidget->selectedItems().at(0)->row();
+
+    auto f = [=](list<Model*> models) -> Model* {
+        int i = 0;
+        for (auto item : models) {
+            if (i == row) {
+                return item;
+            }
+            i++;
+        }
+    };
+
+    switch (type) {
+    case manager:
+        ManagerTable::instance().remove(*(ManagerModel*)f(ManagerTable::instance().elements()));
+        print(ManagerTable::instance().asString().c_str());
+    break;
+    case model:
+        ModelTable::instance().remove(*(ModelModel*)f(ModelTable::instance().elements()));
+        print(ModelTable::instance().asString().c_str());
+    break;
+    case car:
+        CarTable::instance().remove(*(CarModel*)f(CarTable::instance().elements()));
+        print(CarTable::instance().asString().c_str());
+    break;
+    case carManager:
+        CarManagerTable::instance().remove(*(CarManagerModel*)f(CarManagerTable::instance().elements()));
         print(CarManagerTable::instance().asString().c_str());
     break;
     }
