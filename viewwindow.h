@@ -37,12 +37,17 @@ private slots:
 
     void on_delBtn_clicked();
 
+    void on_editBox_stateChanged(int arg1);
+
+    void onDataChange(QString data);
+
 private:
     Ui::ViewWindow *ui;
 
     ViewType type;
 
-    void print(QString elements);
+//    void print(QString elements);
+    void print(list<Model*> models);
 
 };
 

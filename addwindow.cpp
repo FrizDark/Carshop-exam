@@ -2,7 +2,6 @@
 #include "ui_addwindow.h"
 
 #include <QDebug>
-#include <typeinfo>
 
 string valuesToStr(Model* model) {
 
@@ -149,7 +148,6 @@ AddWindow::AddWindow(InputStyle* is, QWidget *parent) :
         }
         label->setObjectName(field.first.c_str());
         inputs.enqueue(make_pair(label, input));
-
     }
 
     for (int i = 0; i < inputs.count(); i++) {
