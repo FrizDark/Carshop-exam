@@ -3,7 +3,9 @@
 
 #include <QMainWindow>
 
-#include "View.h"
+#include "Table.h"
+
+#include "addwindow.h"
 
 enum ViewType {
     manager, model, car, carManager
@@ -29,13 +31,14 @@ signals:
 private slots:
     void on_exitBtn_clicked();
 
+    void on_addBtn_clicked();
+
+    void getData(map<string, ElementValue>);
+
 private:
     Ui::ViewWindow *ui;
 
     ViewType type;
-
-//    void print(list<Model*> elements);
-//    void print(View view);
 
     void print(QString elements);
 
