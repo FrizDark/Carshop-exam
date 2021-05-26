@@ -44,6 +44,7 @@ ViewWindow::ViewWindow(ViewType type, QWidget *parent) :
     case car:
 
         this->setWindowTitle("Машины");
+        ModelTable::instance().load();
         CarTable::instance().load();
         print(CarTable::instance().elements());
 
@@ -52,6 +53,8 @@ ViewWindow::ViewWindow(ViewType type, QWidget *parent) :
     case carManager:
 
         this->setWindowTitle("Машины и менеджеры");
+        CarTable::instance().load();
+        ManagerTable::instance().load();
         CarManagerTable::instance().load();
         print(CarManagerTable::instance().elements());
 
@@ -67,12 +70,24 @@ ViewWindow::~ViewWindow()
 }
 
 void ViewWindow::print(list<Model*> models) {
-    int i = 0, j = 0;
+    int i = 0, j = 0, menuPos = 0;
     QTableWidgetItem* item;
     QLineEdit* cell;
+    QComboBox* cell_cb;
     QStringList columns;
 
+    QSignalMapper* mapper = new QSignalMapper(this);
+
     Model* m;
+
+    auto f = [](Model* m) -> string {
+        QStringList list;
+        for (auto i : m->Values()) {
+            if (m->Fields().find(i.first)->second.Description == "ID") continue;
+            list.append(i.second.asString().c_str());
+        }
+        return list.join(" | ").toStdString();
+    };
 
     switch (type) {
     case manager:
@@ -89,8 +104,21 @@ void ViewWindow::print(list<Model*> models) {
     break;
     }
     for (auto head : m->Fields()) {
-        if (head.second.Description == "ID") continue;
-        columns.append(head.second.Description.c_str());
+        if (head.first == "ID") continue;
+
+        if (head.second.Description == "ID") {
+            if (head.first == "Model_ID") {
+                columns.append("Модель");
+            }
+            else if (head.first == "Car_ID") {
+                columns.append("Машина");
+            }
+            else if (head.first == "Manager_ID") {
+                columns.append("Менеджер");
+            }
+        } else {
+            columns.append(head.second.Description.c_str());
+        }
     }
     ui->tableWidget->setColumnCount(columns.size());
     ui->tableWidget->setHorizontalHeaderLabels(columns);
@@ -103,24 +131,64 @@ void ViewWindow::print(list<Model*> models) {
         for (auto model : models) {
             for (auto value : model->Values()) {
                 auto field = *m->Fields().find(value.first);
-                if (field.second.Description == "ID") continue;
+//                if (field.second.Description == "ID") continue;
+                if (field.first == "ID") continue;
 
                 item = new QTableWidgetItem;
                 ui->tableWidget->setItem(i, j, item);
 
-                cell = new QLineEdit(value.second.asString().c_str());
-                cell->setObjectName(QString().asprintf("%d_%d", i, j));
-                connect(cell, SIGNAL(textChanged(QString)), this, SLOT(onDataChange(QString)));
+                if (field.second.Description == "ID") {
+                    cell_cb = new QComboBox;
 
-                if (field.second.Type == tnumber) {
-                    if (field.first == "Price") {
-                        cell->setText(QString().asprintf("%s", value.second.asString().c_str()).replace(".", ","));
-                        cell->setValidator(new QDoubleValidator(0.00, 9999999.99, 2));
-                    } else {
-                        cell->setValidator(new QIntValidator(0, 99));
+                    mapper->setMapping(cell_cb, QString().asprintf("%d|%d", j, i));
+
+                    menuPos = 0;
+                    if (field.first == "Model_ID") {
+                        for (auto model : ModelTable::instance().elements()) {
+                            cell_cb->addItem(f(model).c_str());
+                            if (model->Values().find("ID")->second.asString() == value.second.asString()) {
+                                cell_cb->setCurrentIndex(menuPos);
+                            }
+                            menuPos++;
+                        }
                     }
+                    else if (field.first == "Car_ID") {
+                        for (auto model : CarTable::instance().elements()) {
+                            cell_cb->addItem(f(model).c_str());
+                            if (model->Values().find("ID")->second.asString() == value.second.asString()) {
+                                cell_cb->setCurrentIndex(menuPos);
+                            }
+                            menuPos++;
+                        }
+                    }
+                    else if (field.first == "Manager_ID") {
+                        for (auto model : ManagerTable::instance().elements()) {
+                            cell_cb->addItem(f(model).c_str());
+                            if (model->Values().find("ID")->second.asString() == value.second.asString()) {
+                                cell_cb->setCurrentIndex(menuPos);
+                            }
+                            menuPos++;
+                        }
+                    }
+                    connect(cell_cb, SIGNAL(currentIndexChanged(int)), mapper, SLOT(map()));
+                    connect(mapper, SIGNAL(mappedString(QString)), this, SLOT(onComboChange(QString)));
+                    ui->tableWidget->setCellWidget(i, j, cell_cb);
+                } else {
+                    cell = new QLineEdit(value.second.asString().c_str());
+                    cell->setObjectName(QString().asprintf("%d_%d", i, j));
+
+                    connect(cell, SIGNAL(textChanged(QString)), this, SLOT(onDataChange(QString)));
+
+                    if (field.second.Type == tnumber) {
+                        if (field.first == "Price") {
+                            cell->setText(QString().asprintf("%s", value.second.asString().c_str()).replace(".", ","));
+                            cell->setValidator(new QDoubleValidator(0.00, 9999999.99, 2));
+                        } else {
+                            cell->setValidator(new QIntValidator(0, 99));
+                        }
+                    }
+                    ui->tableWidget->setCellWidget(i, j, cell);
                 }
-                ui->tableWidget->setCellWidget(i, j, cell);
 
                 j++;
             }
@@ -330,7 +398,7 @@ void ViewWindow::onDataChange(QString data) {
     auto getField = [=](map<string, TypeName> fields) -> pair<string, TypeName> {
         int i = 0;
         for (auto field : fields) {
-            if (field.second.Description == "ID") continue;
+            if (field.first == "ID") continue;
             if (i == cell->column()) {
                 return field;
             }
@@ -378,6 +446,90 @@ void ViewWindow::onDataChange(QString data) {
                 }
             break;
             }
+        } else {
+            mm->insert(value);
+        }
+    }
+
+    *m = *mm;
+
+}
+
+void ViewWindow::onComboChange(QString data) {
+    QStringList l = data.split("|");
+    int col = l.at(0).toInt();
+    int row = l.at(1).toInt();
+    QComboBox* box = (QComboBox*)ui->tableWidget->cellWidget(row, col);
+
+    auto getItem = [=](list<Model*> models) -> Model* {
+        int i = 0;
+        for (auto item : models) {
+            if (i == row) {
+                return item;
+            }
+            i++;
+        }
+        return nullptr;
+    };
+    auto getField = [=](map<string, TypeName> fields) -> pair<string, TypeName> {
+        int i = 0;
+        for (auto field : fields) {
+            if (field.first == "ID") continue;
+            if (i == col) {
+                return field;
+            }
+            i++;
+        }
+        return make_pair("", TypeName());
+    };
+    auto getItemId = [=](list<Model*> models) -> string {
+        int i = 0;
+        for (auto item : models) {
+            if (i == box->currentIndex()) {
+                return item->Values().find("ID")->second.asString();
+            }
+            i++;
+        }
+        return nullptr;
+    };
+
+    Model* m;
+    Model* mm;
+
+    switch (type) {
+    case manager:
+        m = getItem(ManagerTable::instance().elements());
+        mm = new ManagerModel;
+    break;
+    case model:
+        m = getItem(ModelTable::instance().elements());
+        mm = new ModelModel;
+    break;
+    case car:
+        m = getItem(CarTable::instance().elements());
+        mm = new CarModel;
+    break;
+    case carManager:
+        m = getItem(CarManagerTable::instance().elements());
+        mm = new CarManagerModel;
+    break;
+    }
+
+    auto field = getField(m->Fields());
+
+    for (auto value : m->Values()) {
+        if (value.first == field.first) {
+
+            if (field.first == "Model_ID") {
+                mm->insert(make_pair(field.first, getItemId(ModelTable::instance().elements())));
+            }
+            else if (field.first == "Car_ID") {
+                mm->insert(make_pair(field.first, getItemId(CarTable::instance().elements())));
+            }
+            else if (field.first == "Manager_ID") {
+                mm->insert(make_pair(field.first, getItemId(ManagerTable::instance().elements())));
+            }
+
         } else {
             mm->insert(value);
         }

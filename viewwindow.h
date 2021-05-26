@@ -41,6 +41,8 @@ private slots:
 
     void onDataChange(QString data);
 
+    void onComboChange(QString data);
+
 private:
     Ui::ViewWindow *ui;
 
