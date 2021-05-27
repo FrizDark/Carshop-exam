@@ -3,7 +3,7 @@
 
 #include <QMainWindow>
 
-#include "Table.h"
+#include "SqlTable.h"
 
 #include "addwindow.h"
 #include "searchwindow.h"

@@ -1,4 +1,4 @@
-QT       += core gui widgets
+QT       += core gui widgets sql
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -22,6 +22,7 @@ HEADERS += \
     DateStruct.h \
     IncludeLib.h \
     Model.h \
+    SqlTable.h \
     Table.h \
     addwindow.h \
     mainwindow.h \

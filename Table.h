@@ -327,44 +327,44 @@ public:
 
 
 
-class ModelTable: public Table<ModelModel> {
-public:
-    static auto& instance() {
-        static ModelTable table;
-        return table;
-    }
+//class ModelTable: public Table<ModelModel> {
+//public:
+//    static auto& instance() {
+//        static ModelTable table;
+//        return table;
+//    }
 
-    ModelTable(): Table<ModelModel>("Models") {}
-};
+//    ModelTable(): Table<ModelModel>("Models") {}
+//};
 
-class CarTable: public Table<CarModel> {
-public:
-    static auto& instance() {
-        static CarTable table;
-        return table;
-    }
+//class CarTable: public Table<CarModel> {
+//public:
+//    static auto& instance() {
+//        static CarTable table;
+//        return table;
+//    }
 
-    CarTable():Table<CarModel>("Cars") {}
-};
+//    CarTable():Table<CarModel>("Cars") {}
+//};
 
-class ManagerTable: public Table<ManagerModel> {
-public:
-    static auto& instance() {
-        static ManagerTable table;
-        return table;
-    }
+//class ManagerTable: public Table<ManagerModel> {
+//public:
+//    static auto& instance() {
+//        static ManagerTable table;
+//        return table;
+//    }
 
-    ManagerTable():Table<ManagerModel>("Managers") {}
-};
+//    ManagerTable():Table<ManagerModel>("Managers") {}
+//};
 
-class CarManagerTable: public Table<CarManagerModel> {
-public:
-    static auto& instance() {
-        static CarManagerTable table;
-        return table;
-    }
+//class CarManagerTable: public Table<CarManagerModel> {
+//public:
+//    static auto& instance() {
+//        static CarManagerTable table;
+//        return table;
+//    }
 
-    CarManagerTable():Table<CarManagerModel>("CarManagers") {}
-};
+//    CarManagerTable():Table<CarManagerModel>("CarManagers") {}
+//};
 
 #endif //FINALPROJECTCPP_TABLE_H
