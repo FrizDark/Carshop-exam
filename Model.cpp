@@ -197,13 +197,13 @@ const map<std::string, TypeName> CarManagerModel::Fields() const {
     f.insert(make_pair("Car_ID", tn));
     tn = {tstring, "ID"};
     f.insert(make_pair("Manager_ID", tn));
-    tn = {tstring, "Фамилия"};
-    f.insert(make_pair("LastName", tn));
-    tn = {tstring, "Город"};
-    f.insert(make_pair("City", tn));
-    tn = {tstring, "Номер телефона"};
-    f.insert(make_pair("MobileNumber", tn));
-    tn = {tstring, "Марка машины"};
-    f.insert(make_pair("Mark", tn));
+//    tn = {tstring, "Фамилия"};
+//    f.insert(make_pair("LastName", tn));
+//    tn = {tstring, "Город"};
+//    f.insert(make_pair("City", tn));
+//    tn = {tstring, "Номер телефона"};
+//    f.insert(make_pair("MobileNumber", tn));
+//    tn = {tstring, "Марка машины"};
+//    f.insert(make_pair("Mark", tn));
     return f;
 }
