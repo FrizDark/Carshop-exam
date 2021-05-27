@@ -10,9 +10,7 @@ CONFIG += c++17
 
 SOURCES += \
     BaseTable.cpp \
-    Menu.cpp \
     Model.cpp \
-    View.cpp \
     addwindow.cpp \
     main.cpp \
     mainwindow.cpp \
@@ -22,10 +20,8 @@ HEADERS += \
     BaseTable.h \
     DateStruct.h \
     IncludeLib.h \
-    Menu.h \
     Model.h \
     Table.h \
-    View.h \
     addwindow.h \
     mainwindow.h \
     viewwindow.h
