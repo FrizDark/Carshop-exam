@@ -146,6 +146,17 @@ const ElementValue Model::operator[] (const string &name) const {
     return _values.at(name);
 }
 
+string Model::asString() {
+    string str = "";
+    for (auto i : this->Values()) {
+        if (this->Fields().find(i.first)->second.Description != "ID") {
+            str += i.second.asString() + " | ";
+        }
+    }
+    str.pop_back(); str.pop_back();
+    return str;
+}
+
 const map<std::string, TypeName> ModelModel::Fields() const {
     map<std::string, TypeName> f;
     TypeName tn = {tstring, "ID"};
@@ -165,8 +176,6 @@ const map<std::string, TypeName> CarModel::Fields() const {
     f.insert(make_pair("ID", tn));
     tn = {tstring, "ID"};
     f.insert(make_pair("Model_ID", tn));
-    tn = {tstring, "Марка"};
-    f.insert(make_pair("Mark", tn));
     tn = {tstring, "Цвет"};
     f.insert(make_pair("Color", tn));
     tn = {tnumber, "Цена"};
@@ -197,13 +206,5 @@ const map<std::string, TypeName> CarManagerModel::Fields() const {
     f.insert(make_pair("Car_ID", tn));
     tn = {tstring, "ID"};
     f.insert(make_pair("Manager_ID", tn));
-//    tn = {tstring, "Фамилия"};
-//    f.insert(make_pair("LastName", tn));
-//    tn = {tstring, "Город"};
-//    f.insert(make_pair("City", tn));
-//    tn = {tstring, "Номер телефона"};
-//    f.insert(make_pair("MobileNumber", tn));
-//    tn = {tstring, "Марка машины"};
-//    f.insert(make_pair("Mark", tn));
     return f;
 }

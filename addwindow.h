@@ -36,6 +36,7 @@ struct InputStyle {
         for (const auto& i : items) {
             if (i.first == key) return i;
         }
+        return make_pair("", list<Model*>());
     }
 
 };
@@ -47,7 +48,6 @@ class AddWindow : public QMainWindow
 
 public:
     explicit AddWindow(QWidget *parent = nullptr);
-    explicit AddWindow(map<string, TypeName> fields, QWidget *parent = nullptr);
     explicit AddWindow(InputStyle* is, QWidget *parent = nullptr);
     ~AddWindow();
 
@@ -60,13 +60,19 @@ signals:
 
     void sendData(map<string, ElementValue>);
 
-private:
-    Ui::AddWindow *ui;
+protected:
 
     InputStyle* menu;
 
     QQueue<pair<QLabel*, QWidget *>> inputs;
     QPushButton* submit;
+
+    map<string, ElementValue> create();
+
+private:
+    Ui::AddWindow *ui;
+
+    void generate(map<string, TypeName> fields, function<void(pair<string, TypeName>)> f);
 
 };
 

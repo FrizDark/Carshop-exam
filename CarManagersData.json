@@ -2,27 +2,15 @@
     "CarManagers": [
         {
             "Car_ID": "aaba5e40-3173-47eb-bf10-41faf67c6605",
-            "City": "Kharkiv",
-            "LastName": "Ivanov",
-            "Manager_ID": "4a31fefb-3e03-42d3-86fe-363d6ef24113",
-            "Mark": "Volvo",
-            "MobileNumber": "3801234567"
+            "Manager_ID": "4a31fefb-3e03-42d3-86fe-363d6ef24113"
         },
         {
             "Car_ID": "7e97606d-3c02-4d1d-9e9a-11c333a97cd5",
-            "City": "Kiev",
-            "LastName": "Ogurtsov",
-            "Manager_ID": "02031298-48e5-4ee0-acda-4eb28f29d2c9",
-            "Mark": "Toyota",
-            "MobileNumber": "3807654321"
+            "Manager_ID": "02031298-48e5-4ee0-acda-4eb28f29d2c9"
         },
         {
             "Car_ID": "5ee1078c-15ea-4ec3-83e6-88bfb15c822c",
-            "City": "Kiev",
-            "LastName": "Ogurtsov",
-            "Manager_ID": "02031298-48e5-4ee0-acda-4eb28f29d2c9",
-            "Mark": "BMW",
-            "MobileNumber": "3807654321"
+            "Manager_ID": "02031298-48e5-4ee0-acda-4eb28f29d2c9"
         }
     ]
 }

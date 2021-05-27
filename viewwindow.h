@@ -6,6 +6,7 @@
 #include "Table.h"
 
 #include "addwindow.h"
+#include "searchwindow.h"
 
 enum ViewType {
     manager, model, car, carManager
@@ -43,6 +44,8 @@ private slots:
 
     void onComboChange(QString data);
 
+    void on_findBtn_clicked();
+
 private:
     Ui::ViewWindow *ui;
 
@@ -50,6 +53,8 @@ private:
 
 //    void print(QString elements);
     void print(list<Model*> models);
+
+    pair<InputStyle*, list<Model*>> setModelInputStyle();
 
 };
 

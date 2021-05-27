@@ -131,7 +131,6 @@ void ViewWindow::print(list<Model*> models) {
         for (auto model : models) {
             for (auto value : model->Values()) {
                 auto field = *m->Fields().find(value.first);
-//                if (field.second.Description == "ID") continue;
                 if (field.first == "ID") continue;
 
                 item = new QTableWidgetItem;
@@ -228,62 +227,48 @@ void ViewWindow::on_exitBtn_clicked()
 
 }
 
-void ViewWindow::on_addBtn_clicked()
-{
-    AddWindow* add_ui = nullptr;
-
+pair<InputStyle*, list<Model*>> ViewWindow::setModelInputStyle() {
+    list<Model*> models;
     map<string, TypeName> fields;
     map<string, string> id_fields;
     map<string, list<Model*>> list;
-    InputStyle* is;
-
     Model* m;
 
     switch (type) {
-
     case manager:
         m = new ManagerModel;
-        add_ui = new AddWindow(m->Fields());
-        connect(add_ui, SIGNAL(sendData(map<string, ElementValue>)), this, SLOT(getData(map<string, ElementValue>)));
-        add_ui->show();
+        models = ManagerTable::instance().elements();
     break;
     case model:
         m = new ModelModel;
-        add_ui = new AddWindow(m->Fields());
-        connect(add_ui, SIGNAL(sendData(map<string, ElementValue>)), this, SLOT(getData(map<string, ElementValue>)));
-        add_ui->show();
+        models = ModelTable::instance().elements();
     break;
     case car:
         m = new CarModel;
+        models = CarTable::instance().elements();
         ModelTable::instance().load();
-
         id_fields.insert(make_pair("Model_ID", "Модель"));
         list.insert(make_pair("Model_ID", ModelTable::instance().elements()));
-
-        is = new InputStyle(m->Fields(), id_fields, list);
-
-        add_ui = new AddWindow(is);
-        connect(add_ui, SIGNAL(sendData(map<string, ElementValue>)), this, SLOT(getData(map<string, ElementValue>)));
-        add_ui->show();
     break;
     case carManager:
         m = new CarManagerModel;
+        models = CarManagerTable::instance().elements();
         CarTable::instance().load();
         ManagerTable::instance().load();
-
         id_fields.insert(make_pair("Car_ID", "Машина"));
         id_fields.insert(make_pair("Manager_ID", "Менеджер"));
         list.insert(make_pair("Car_ID", CarTable::instance().elements()));
         list.insert(make_pair("Manager_ID", ManagerTable::instance().elements()));
-
-        is = new InputStyle(m->Fields(), id_fields, list);
-
-        add_ui = new AddWindow(is);
-        connect(add_ui, SIGNAL(sendData(map<string, ElementValue>)), this, SLOT(getData(map<string, ElementValue>)));
-        add_ui->show();
     break;
-
     }
+    return make_pair(new InputStyle(m->Fields(), id_fields, list), models);
+}
+
+void ViewWindow::on_addBtn_clicked()
+{
+    AddWindow* add_ui = new AddWindow(setModelInputStyle().first);
+    connect(add_ui, SIGNAL(sendData(map<string, ElementValue>)), this, SLOT(getData(map<string, ElementValue>)));
+    add_ui->show();
 }
 
 void ViewWindow::getData(map<string, ElementValue> value) {
@@ -537,4 +522,10 @@ void ViewWindow::onComboChange(QString data) {
 
     *m = *mm;
 
+}
+
+void ViewWindow::on_findBtn_clicked()
+{
+    SearchWindow* search_ui = new SearchWindow(setModelInputStyle());
+    search_ui->show();
 }

@@ -33,4 +33,17 @@ typedef boost::tokenizer<boost::char_separator<char>> tokenizer;
 
 using namespace std;
 
+
+// Freatures
+template<class Key, class T>
+bool map_contains(map<Key, T> m, Key && x) {
+
+    for (auto i : m) {
+        if (i.first == x) return true;
+    }
+
+    return false;
+};
+
+
 #endif //FINALPROJECTCPP_INCLUDELIB_H

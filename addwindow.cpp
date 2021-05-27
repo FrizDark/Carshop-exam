@@ -3,42 +3,7 @@
 
 #include <QDebug>
 
-string valuesToStr(Model* model) {
-
-    string str = "";
-    for (auto i : model->Values()) {
-        if (model->Fields().find(i.first)->second.Description != "ID") {
-            str += i.second.asString() + " | ";
-        }
-    }
-    str.pop_back(); str.pop_back();
-    return str;
-
-}
-
-template<class Key, class T>
-bool map_contains(map<Key, T> m, Key && x) {
-
-    for (auto i : m) {
-        if (i.first == x) return true;
-    }
-
-    return false;
-};
-
-
-AddWindow::AddWindow(QWidget *parent) :
-    QMainWindow(parent),
-    ui(new Ui::AddWindow)
-{
-    ui->setupUi(this);
-}
-
-AddWindow::AddWindow(map<string, TypeName> fields, QWidget *parent) :
-    QMainWindow(parent),
-    ui(new Ui::AddWindow)
-{
-//    ui->setupUi(this);
+void AddWindow::generate(map<string, TypeName> fields, function<void(pair<string, TypeName>)> f) {
 
     setWindowTitle("Добавление");
 
@@ -47,29 +12,7 @@ AddWindow::AddWindow(map<string, TypeName> fields, QWidget *parent) :
     inputs = QQueue<pair<QLabel*, QWidget *>>();
 
     for (auto field : fields) {
-        if (field.second.Description == "ID") continue;
-
-        QWidget * input;
-
-        switch (field.second.Type) {
-        case tstring:
-            input = new QLineEdit();
-        break;
-        case tnumber:
-            if (field.first == "Price") {
-                input = new QDoubleSpinBox();
-                ((QDoubleSpinBox*)input)->setMaximum(999999.99);
-            } else {
-                input = new QSpinBox();
-                ((QSpinBox*)input)->setMaximum(120);
-            }
-        break;
-        }
-
-        auto label = new QLabel(field.second.Description.c_str());
-        label->setObjectName(field.first.c_str());
-        inputs.enqueue(make_pair(label, input));
-
+        if (field.first != "ID") f(field);
     }
 
     for (int i = 0; i < inputs.count(); i++) {
@@ -91,22 +34,21 @@ AddWindow::AddWindow(map<string, TypeName> fields, QWidget *parent) :
 
 }
 
+
+AddWindow::AddWindow(QWidget *parent) :
+    QMainWindow(parent),
+    ui(new Ui::AddWindow)
+{
+    ui->setupUi(this);
+}
+
 AddWindow::AddWindow(InputStyle* is, QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::AddWindow)
 {
-//    ui->setupUi(this);
-
     menu = is;
 
-    setWindowTitle("Добавление");
-
-    auto grid = new QGridLayout;
-
-    inputs = QQueue<pair<QLabel*, QWidget *>>();
-
-    for (auto field : menu->fields) {
-        if (field.first == "ID") continue;
+    generate(menu->fields, [=](pair<string, TypeName> field) {
 
         QWidget * input;
 
@@ -119,7 +61,7 @@ AddWindow::AddWindow(InputStyle* is, QWidget *parent) :
                         auto menuBox = new QComboBox;
 
                         for (auto j : i.second) {
-                            menuBox->addItem(valuesToStr(j).c_str());
+                            menuBox->addItem(j->asString().c_str());
                         }
 
                         input = menuBox;
@@ -148,24 +90,8 @@ AddWindow::AddWindow(InputStyle* is, QWidget *parent) :
         }
         label->setObjectName(field.first.c_str());
         inputs.enqueue(make_pair(label, input));
-    }
 
-    for (int i = 0; i < inputs.count(); i++) {
-        grid->addWidget(inputs[i].first, i, 0);
-        grid->addWidget(inputs[i].second, i, 1);
-    }
-
-    QPushButton* cancel = new QPushButton("Отмена");
-    connect(cancel, SIGNAL(clicked()), this, SLOT(onCancel()));
-    grid->addWidget(cancel, inputs.count(), 0);
-
-    submit = new QPushButton("Добавить");
-    connect(submit, SIGNAL(clicked()), this, SLOT(onSubmit()));
-    grid->addWidget(submit, inputs.count(), 1);
-
-    auto w = new QWidget(this);
-    this->setCentralWidget(w);
-    w->setLayout(grid);
+    });
 
 }
 
@@ -180,10 +106,8 @@ AddWindow::~AddWindow()
     }
 }
 
-void AddWindow::onSubmit() {
-
+map<string, ElementValue> AddWindow::create() {
     map<string, ElementValue> values;
-
     for (auto input : inputs) {
 
         string type = input.second->metaObject()->className();
@@ -193,21 +117,21 @@ void AddWindow::onSubmit() {
             ElementValue ev = ElementValue(((QLineEdit*)input.second)->text().toStdString());
             if (ev.asString().length() == 0) {
                 QMessageBox::about(this, "Предупреждение", "Заполните все поля!");
-                return;
+                return map<string, ElementValue>();
             }
             values.insert(make_pair(str, ev));
         } else if (type == "QSpinBox") {
             ElementValue ev = ElementValue(((QSpinBox*)input.second)->text().toInt());
             if (ev.asString().length() == 0) {
                 QMessageBox::about(this, "Предупреждение", "Заполните все поля!");
-                return;
+                return map<string, ElementValue>();
             }
             values.insert(make_pair(str, ev));
         } else if (type == "QDoubleSpinBox") {
             ElementValue ev = ElementValue(((QDoubleSpinBox*)input.second)->text().replace(",", ".").toDouble());
             if (ev.asString().length() == 0) {
                 QMessageBox::about(this, "Предупреждение", "Заполните все поля!");
-                return;
+                return map<string, ElementValue>();
             }
             values.insert(make_pair(str, ev));
         } else if (type == "QComboBox") {
@@ -216,7 +140,7 @@ void AddWindow::onSubmit() {
 
             for (auto i : menu->items) {
                 for (auto j : i.second) {
-                    if (valuesToStr(j) == selected) {
+                    if (j->asString() == selected) {
                         ElementValue ev = ElementValue(j->Values().find("ID")->second);
                         values.insert(make_pair(str, ev));
                     }
@@ -226,10 +150,12 @@ void AddWindow::onSubmit() {
         }
 
     }
+    return values;
+}
 
-    emit sendData(values);
+void AddWindow::onSubmit() {
+    emit sendData(create());
     this->close();
-
 }
 
 void AddWindow::onCancel() {

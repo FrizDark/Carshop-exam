@@ -77,6 +77,8 @@ public:
     Model& operator=(const Model&);
     virtual Model* clone() = 0;
 
+    string asString();
+
 };
 
 class ModelModel: public Model {

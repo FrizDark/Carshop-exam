@@ -14,6 +14,7 @@ SOURCES += \
     addwindow.cpp \
     main.cpp \
     mainwindow.cpp \
+    searchwindow.cpp \
     viewwindow.cpp
 
 HEADERS += \
@@ -24,11 +25,13 @@ HEADERS += \
     Table.h \
     addwindow.h \
     mainwindow.h \
+    searchwindow.h \
     viewwindow.h
 
 FORMS += \
     addwindow.ui \
     mainwindow.ui \
+    searchwindow.ui \
     viewwindow.ui
 
 INCLUDEPATH += \

@@ -3,21 +3,18 @@
         {
             "Color": "Blue",
             "ID": "aaba5e40-3173-47eb-bf10-41faf67c6605",
-            "Mark": "Volvo",
             "Model_ID": "d1dba232-d1fd-4982-b8dd-f5ea09edc0fd",
-            "Price": "999.9"
+            "Price": "999.89999999999998"
         },
         {
             "Color": "Red",
             "ID": "5ee1078c-15ea-4ec3-83e6-88bfb15c822c",
-            "Mark": "BMW",
             "Model_ID": "076d0f1a-8e28-4791-901a-0e7fdf7c720c",
-            "Price": "9129"
+            "Price": "9128"
         },
         {
             "Color": "Green",
             "ID": "7e97606d-3c02-4d1d-9e9a-11c333a97cd5",
-            "Mark": "Toyota",
             "Model_ID": "579c1684-8f10-438b-912b-249ed113039d",
             "Price": "1234"
         }
