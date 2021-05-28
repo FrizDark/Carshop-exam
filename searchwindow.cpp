@@ -171,11 +171,19 @@ void SearchWindow::onSearch() {
 
     int num = 0;
 
+    auto f = [](string s) -> string {
+        string result = "";
+        for (auto c : s) {
+            result += tolower(c);
+        }
+        return result;
+    };
+
     list<pair<int, Model*>> arr;
 
     for (auto model : models) {
         for (auto value : create()) {
-            if (model->Values().find(value.first)->second.asString() == value.second.asString()) {
+            if (f(model->Values().find(value.first)->second.asString()) == f(value.second.asString())) {
                 num++;
             }
         }
